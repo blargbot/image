@@ -1,4 +1,4 @@
-const Generator = require.main.require('./ImageGenerator');
+const Generator = require('../Structures/ImageGenerator');
 
 class DeleteGenerator extends Generator {
     async generate(args) {

@@ -1,7 +1,5 @@
 const Eris = require('eris');
-const Random = require('../Helpers/Random');
-const random = new Random();
-const superagent = require('superagent');
+const snekfetch = require('snekfetch');
 const phantom = require('phantom');
 
 const gm = require('gm');
@@ -20,7 +18,7 @@ class ImageGenerator {
         this.channel = process.env.IMAGE_CHANNEL;
     }
 
-    get request() { return superagent; }
+    get request() { return snekfetch; }
     get random() { return random; }
     get gm() { return gm; }
     get im() { return im; }
@@ -48,42 +46,52 @@ class ImageGenerator {
         }
     }
 
-    async renderPhantom(file, replaces, scale = 1, format = 'PNG', extraFunction, extraFunctionArgs) {
+    async renderPhantom(file, replaces, scale = 1, format = 'PNG', extraFunctions, extraFunctionArgs) {
         const instance = await phantom.create(['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1']);
         const page = await instance.createPage();
 
-        page.property('onConsoleMessage', function (msg) {
-            console.log('[IM]', msg);
+        page.on('onConsoleMessage', function(msg) {
+            console.debug('[IM]', msg);
         });
-        // page.property('onResourceError', function (resourceError) {
-        //     console.error(resourceError.url + ': ' + resourceError.errorString);
-        // });
+        page.on('onResourceError', function(resourceError) {
+            console.error(resourceError.url + ': ' + resourceError.errorString);
+        });
 
         let dPath = this.getLocalResourcePath(file);
         const status = await page.open(dPath);
 
-        await page.property('viewportSize', { width: 1440, height: 900 });
-        await page.property('zoomFactor', scale);
+        await page.on('viewportSize', { width: 1440, height: 900 });
+        await page.on('zoomFactor', scale);
 
-
-
-        let rect = await page.evaluate(function (message) {
+        let rect = await page.evaluate(function(message) {
             var keys = Object.keys(message);
             for (var i = 0; i < keys.length; i++) {
                 var thing = document.getElementById(keys[i]);
-                document.querySelector('#' + keys[i]).innerText = message[keys[i]];
+                thing.innerText = message[keys[i]];
             }
-            return document.querySelector('#workspace').getBoundingClientRect();
+            try {
+                var workspace = document.getElementById("workspace");
+                return workspace.getBoundingClientRect();
+            } catch (err) {
+                console.error(err);
+                return { top: 0, left: 0, width: 300, height: 300 };
+            }
         }, replaces);
 
-        await page.property('clipRect', {
+        await page.on('clipRect', {
             top: rect.top,
             left: rect.left,
             width: rect.width * scale,
             height: rect.height * scale
         });
-        if (typeof extraFunction === 'function') {
-            await page.evaluate(extraFunction, extraFunctionArgs);
+        if (typeof extraFunctions === 'function') {
+            extraFunctions = [extraFunctions];
+        }
+        if (Array.isArray(extraFunctions)) {
+            for (const extraFunction of extraFunctions) {
+                if (typeof extraFunction === 'function')
+                    await page.evaluate(extraFunction, extraFunctionArgs);
+            }
         }
 
         let base64 = await page.renderBase64(format);
@@ -116,14 +124,14 @@ class ImageGenerator {
     }
 
     getResource(url) {
-        return new Promise(async function (resolve, reject) {
+        return new Promise(async function(resolve, reject) {
             url = url.trim();
             if (url.startsWith('<') && url.endsWith('>')) {
                 url = url.substring(1, url.length - 1);
             }
             let res = await this.request.get(url);
             if (res.headers['content-type'] == 'image/gif') {
-                this.gm(res.body, 'temp.gif').selectFrame(0).setFormat('png').toBuffer(function (err, buffer) {
+                this.gm(res.body, 'temp.gif').selectFrame(0).setFormat('png').toBuffer(function(err, buffer) {
                     if (err) {
                         console.error('Error converting gif');
                         reject(err);
@@ -181,7 +189,7 @@ class ImageGenerator {
                 image.out('-composite');
             }
             image.setFormat('png');
-            image.toBuffer(function (err, buf) {
+            image.toBuffer(function(err, buf) {
                 if (err) {
                     console.error(`[IM] Failed to generate a caption: '${options.text}'`);
                     reject(err);
@@ -194,7 +202,7 @@ class ImageGenerator {
 
     getBufferFromIM(img) {
         return new Promise((resolve, reject) => {
-            img.setFormat('png').toBuffer(function (err, buffer) {
+            img.setFormat('png').toBuffer(function(err, buffer) {
                 if (err) {
                     reject(err);
                     return;
