@@ -2,12 +2,14 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 class Security {
-    static async generateToken(id) {
+    static async generateToken(id, invalidate = true) {
         let ts = Date.now();
-        let user = await _dbModels.User.findOrCreate({
-            where: { userid: id }, defaults: { tokenDate: ts }
-        });
-        await user[0].update({ tokenDate: ts });
+        if (invalidate) {
+            let user = await _dbModels.User.findOrCreate({
+                where: { userid: id }, defaults: { tokenDate: ts }
+            });
+            await user[0].update({ tokenDate: ts });
+        }
 
         const token = jwt.sign(id + '.' + ts, _config.security.secret);
         return token;

@@ -29,7 +29,8 @@ class SecurityRoute {
         router.post('/generate', async (req, res) => {
             if (req.isAuthenticated() && req.user.id === CAT_ID) {
                 if (req.body.id) {
-                    let t = await Security.generateToken(req.body.id);
+                    console.log(req.body);
+                    let t = await Security.generateToken(req.body.id, req.body.invalidate === 'on');
                     res.send(t);
                 } else {
                     res.send('id pls');
