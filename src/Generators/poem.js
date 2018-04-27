@@ -3,6 +3,10 @@ const Generator = require('../Structures/ImageGenerator');
 class PoemGenerator extends Generator {
     async generate(args) {
         await super.generate(args);
+        let names = ['monika', 'sayori', 'yuri', 'natsuki'];
+        if (args.name && typeof args.name === 'string' && names.includes(args.name.toLowerCase()))
+            args.name = args.name.toLowerCase();
+        else args.name = 'monika';
         if (!args.text) args.text = 'Just Monika.';
         let base64 = await this.renderPhantom('poem.html', { replace1: args.text }, 2, 'PNG',
             function (args) {
@@ -58,7 +62,7 @@ class PoemGenerator extends Generator {
                 return _results;
             }, { name: args.name, yuri: args.yuri });
 
-        await this.send('poem.png', base64);
+        await this.send(base64);
     }
 
 }

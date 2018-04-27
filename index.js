@@ -6,6 +6,8 @@ process.on('unhandledRejection', (err, p) => {
 });
 
 new Logger('MS', _config.log.level || 'info').setGlobal();
-console.log('fuck me');
+console.init('Initializing...');
 
 const { Website } = require('./src/Frontend');
+
+const Database = require('./src/Core/Database');

@@ -13,7 +13,6 @@ const path = require('path');
 
 class ImageGenerator {
     constructor() {
-        this.bot = new Eris(process.env.BOT_TOKEN);
         this.message = process.env.IMAGE_MESSAGE || '';
         this.channel = process.env.IMAGE_CHANNEL;
     }
@@ -28,22 +27,14 @@ class ImageGenerator {
     get phantom() { return phantom; }
 
     async generate(args) {
-        if (this.channel)
-            await this.bot.sendChannelTyping(this.channel);
+        // no-op
     }
 
-    async send(name, data) {
+    async send(data, contentType = 'image/png') {
         if (typeof data === 'string')
-            data = Buffer.from(data, 'base64');
-        if (process.env.DESTINATION === 'api') {
-            process.send(data.toString('base64'));
-        } else {
-            let msg = await this.bot.createMessage(this.channel, this.message, {
-                file: data,
-                name
-            });
-            process.send(msg.id);
-        }
+            process.send({ image: data, contentType });
+        else
+            process.send({ image: Buffer.from(data, 'base64'), contentType });
     }
 
     async renderPhantom(file, replaces, scale = 1, format = 'PNG', extraFunctions, extraFunctionArgs) {
