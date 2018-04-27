@@ -1,13 +1,35 @@
 const Generator = require('../Structures/ImageGenerator');
 
 class ShitGenerator extends Generator {
+    constructor() {
+        super({
+            title: 'Shit',
+            description: 'Exclaim that something is shit.',
+            body: [
+                {
+                    name: "text",
+                    type: "string",
+                    optional: false,
+                    description: "The shit thing in question."
+                },
+                {
+                    name: 'plural',
+                    type: 'boolean',
+                    optional: true,
+                    default: 'false',
+                    description: 'Whether the text should be considered plural (\'are\' vs \'is\')'
+                }
+            ]
+        });
+    }
+
     async generate(args) {
         await super.generate(args);
 
         let base64 = await this.renderPhantom('shit.html', { replace1: args.text, replace2: args.plural ? 'are' : 'is' }, 1, 'PNG',
             this.resize);
 
-        await this.send('thesearch.png', base64);
+        await this.send(base64);
     }
 
     get resize() {

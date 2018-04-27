@@ -1,12 +1,27 @@
 const Generator = require('../Structures/ImageGenerator');
 
 class TheSearchGenerator extends Generator {
+    constructor() {
+        super({
+            title: 'The Search',
+            description: 'Go on a journey to find intelligent life.',
+            body: [
+                {
+                    name: "text",
+                    type: "string",
+                    optional: false,
+                    description: "A quote from a questionable intelligent lifeform."
+                }
+            ]
+        });
+    }
+
     async generate(args) {
         await super.generate(args);
 
         let base64 = await this.renderPhantom('thesearch.html', { replace1: args.text }, 1, 'PNG', this.resize);
 
-        await this.send('thesearch.png', base64);
+        await this.send(base64);
     }
 
     get resize() {

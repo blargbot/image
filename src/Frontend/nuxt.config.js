@@ -2,7 +2,7 @@ module.exports = {
     dev: _config.beta,
     srcDir: 'src/Frontend/',
     build: {
-        vendor: [],
+        vendor: ['axios'],
         extractCSS: true
     },
     css: [
@@ -19,7 +19,7 @@ module.exports = {
             { rel: 'shortcut icon', type: 'image/png', href: '/img/favicon.png' },
             { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
             { rel: 'stylesheet', href: 'https://code.getmdl.io/1.3.0/material.teal-pink.min.css' },
-            { rel: 'stylesheet', href: 'css/style.css' }
+            { rel: 'stylesheet', href: '/css/style.css' }
         ]
     },
     router: {

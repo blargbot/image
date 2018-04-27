@@ -8,13 +8,13 @@ class PoemGenerator extends Generator {
             body: [
                 {
                     name: "text",
-                    type: "String",
+                    type: "string",
                     optional: false,
                     description: "The poem's content."
                 },
                 {
                     name: "name",
-                    type: "String",
+                    type: "string",
                     optional: true,
                     default: "monika",
                     description:
@@ -22,15 +22,13 @@ class PoemGenerator extends Generator {
                 },
                 {
                     name: "yuri",
-                    type: "Number",
+                    type: "number",
                     optional: true,
                     description: "The Yuri variation to use. Either blank, 1, or 2."
                 }
             ]
         });
     }
-
-
 
     async generate(args) {
         await super.generate(args);

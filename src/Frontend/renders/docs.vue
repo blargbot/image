@@ -12,39 +12,23 @@
 
 <script>
 import endpoint from "../components/endpoint.vue";
+import axios from "axios";
 
 export default {
   data: () => ({
-    endpoints: [
-      {
-        title: "Poem",
-        endpoint: "/image/poem",
-        method: "POST",
-        description: "Writes a lovely DDLC poem.",
-        body: [
-          {
-            name: "text",
-            type: "String?",
-            default: "Just Monika",
-            description: "The poem's content."
-          },
-          {
-            name: "name",
-            type: "String?",
-            default: "monika",
-            description:
-              "The name of the girl who is writing the poem. One of 'monika', 'sayori', 'yuri', and 'natsuki'."
-          },
-          {
-            name: "yuri",
-            type: "Number?",
-            description: "The Yuri variation to use. Either blank, 1, or 2."
-          }
-        ]
-      }
-    ]
+    endpoints: []
   }),
-  components: { endpoint: endpoint }
+  components: { endpoint: endpoint },
+  mounted() {
+    axios
+      .get("/api/v1/data/")
+      .then(res => {
+        this.endpoints = res.data;
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
 };
 </script>
 

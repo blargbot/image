@@ -48,6 +48,18 @@ class ImageGenerator {
         for (const arg of this.body) {
             if (arg.optional !== true && !args[arg.name])
                 throw new ArgError(arg, 'required parameter not provided');
+            else if (arg.optional === true && !args[arg.name]) {
+                args[arg.name] = arg.default;
+            }
+            if (arg.type !== 'string' && args[arg.name]) {
+                if (typeof args[arg.name] === 'string')
+                    try {
+                        args[arg.name] = JSON.parse(args[arg.name]);
+                    } catch (err) { }
+                if (typeof args[arg.name] !== arg.type)
+                    throw new ArgError(arg, `expected type '${arg.type}' but received '${typeof args[arg.name]}'`);
+            } else if (arg.type === 'string' && args[arg.name])
+                args[arg.name] = args[arg.name].toString();
         }
     }
 

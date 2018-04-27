@@ -15,7 +15,7 @@
         <tbody>
             <tr v-for="param in endpoint.body" v-bind:key="param.name">
                 <td class='mdl-data-table__cell--non-numeric'><code>{{param.name}}</code></td>
-                <td class='mdl-data-table__cell--non-numeric'><code>{{param.type}}</code></td>
+                <td class='mdl-data-table__cell--non-numeric'><code>{{param.type}}{{param.optional ? '?' : ''}}</code></td>
                 <td class='mdl-data-table__cell--non-numeric'><code>{{param.default}}</code></td>
                 <td class='mdl-data-table__cell--non-numeric'>{{param.description}}</td>
             </tr>
