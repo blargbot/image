@@ -1,0 +1,29 @@
+{
+  "name": "blargbot-image",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blargbot/image.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blargbot/image/issues"
+  },
+  "homepage": "https://github.com/blargbot/image#readme",
+  "dependencies": {
+    "eris": "^0.8.5",
+    "eslint": "^4.19.1",
+    "express": "^4.16.3",
+    "gm": "^1.23.1",
+    "jimp": "^0.2.28",
+    "phantom": "^4.0.12",
+    "phantomjs-prebuilt": "^2.1.16",
+    "snekfetch": "^4.0.0"
+  }
+}
