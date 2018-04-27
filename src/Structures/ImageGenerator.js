@@ -98,12 +98,12 @@ class ImageGenerator {
     }
 
     get resourceDir() {
-        return this.path.join(__dirname, '..', '..', 'Production', 'Image');
+        return this.path.join(__dirname, '..', '..', 'res');
     }
 
     getLocalResource(name, encoding = null) {
         return new Promise((resolve, reject) => {
-            let filePath = this.path.join(this.resourceDir, 'Resources', name);
+            let filePath = this.path.join(this.resourceDir, name);
             fs.readFile(name, { encoding }, (err, res) => {
                 if (err) reject(err);
                 else resolve(res);
@@ -112,7 +112,7 @@ class ImageGenerator {
     }
 
     getLocalResourcePath(name) {
-        return this.path.join(this.resourceDir, 'Resources', name).replace(/\\/g, '/').replace(/^\w:/, '');
+        return this.path.join(this.resourceDir, name).replace(/\\/g, '/').replace(/^\w:/, '');
     }
 
     getResource(url) {

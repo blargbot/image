@@ -17,13 +17,16 @@
   },
   "homepage": "https://github.com/blargbot/image#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "eris": "^0.8.5",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "gm": "^1.23.1",
     "jimp": "^0.2.28",
+    "moment-timezone": "^0.5.16",
     "phantom": "^4.0.12",
     "phantomjs-prebuilt": "^2.1.16",
+    "sequelize": "^4.37.6",
     "snekfetch": "^4.0.0"
   }
 }
