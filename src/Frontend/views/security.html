@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+
+<body>
+    <form action='/security/generate' method='post'>
+        ID:<br>
+        <input type="text" name="id"><br>
+        <label for='invalidate'><input type='checkbox' name='invalidate' id='invalidate' checked>Invalidate</label><br>
+        <button type='submit'>Generate</button>
+    </form>
+    <br>
+    <br>
+    <form action='/security/verify' method='post'>
+        Token:<br>
+        <input type="text" name="token"><br>
+        <button type='submit'>Verify</button>
+    </form>
+</body>
+
+</html>
