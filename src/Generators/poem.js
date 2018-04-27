@@ -1,6 +1,37 @@
 const Generator = require('../Structures/ImageGenerator');
 
 class PoemGenerator extends Generator {
+    constructor() {
+        super({
+            title: 'Poem',
+            description: 'Writes a lovely DDLC poem.',
+            body: [
+                {
+                    name: "text",
+                    type: "String",
+                    optional: false,
+                    description: "The poem's content."
+                },
+                {
+                    name: "name",
+                    type: "String",
+                    optional: true,
+                    default: "monika",
+                    description:
+                        "The name of the girl who is writing the poem. One of 'monika', 'sayori', 'yuri', and 'natsuki'."
+                },
+                {
+                    name: "yuri",
+                    type: "Number",
+                    optional: true,
+                    description: "The Yuri variation to use. Either blank, 1, or 2."
+                }
+            ]
+        });
+    }
+
+
+
     async generate(args) {
         await super.generate(args);
         let names = ['monika', 'sayori', 'yuri', 'natsuki'];

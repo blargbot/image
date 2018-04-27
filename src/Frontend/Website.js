@@ -6,6 +6,9 @@ const Strategy = require('passport-discord').Strategy;
 const session = require('express-session');
 const cons = require('consolidate');
 
+const { Nuxt, Builder } = require('nuxt');
+
+
 class Website {
     constructor(port = 8079) {
         this.port = port;
@@ -14,6 +17,12 @@ class Website {
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
+
+        const nuxtConfig = require('./nuxt.config.js');
+        this.nuxt = new Nuxt(nuxtConfig);
+        if (this.nuxt.options.dev) {
+            new Builder(this.nuxt).build();
+        }
 
         passport.serializeUser((user, done) => {
             done(null, user);
@@ -63,12 +72,15 @@ class Website {
             delete req.session.user;
             res.redirect(req.session.returnTo || '/');
         });
-
+        this.app.get('/', (req, res) => {
+            res.redirect('/app');
+        });
         this.app.engine('html', cons.swig);
         this.app.set('views', path.join(__dirname, 'views'));
         this.app.set('view engine', 'html');
         this.app.use('/', express.static(path.join(__dirname, 'public')));
         this.app.use('/security', new (require('./routes/security'))(this).router);
+        this.app.use(this.nuxt.render);
         this.app.use('/api/v1', new (require('./routes/apiv1'))(this).router);
     }
 

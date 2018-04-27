@@ -11,12 +11,16 @@ const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
 
-class ImageGenerator {
-    constructor() {
-        this.message = process.env.IMAGE_MESSAGE || '';
-        this.channel = process.env.IMAGE_CHANNEL;
+class ArgError extends Error {
+    constructor(arg, m) {
+        let message = `Error in argument '${arg.name}': ${m}`;
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
     }
+}
 
+class ImageGenerator {
     get request() { return snekfetch; }
     get random() { return random; }
     get gm() { return gm; }
@@ -25,6 +29,27 @@ class ImageGenerator {
     get fs() { return fs; }
     get path() { return path; }
     get phantom() { return phantom; }
+
+    constructor(args = {}) {
+        this.title = args.title;
+        this.description = args.description;
+        this.body = args.body;
+    }
+
+    serialize() {
+        return {
+            title: this.title,
+            description: this.description,
+            body: this.body
+        };
+    }
+
+    validateArgs(args) {
+        for (const arg of this.body) {
+            if (arg.optional !== true && !args[arg.name])
+                throw new ArgError(arg, 'required parameter not provided');
+        }
+    }
 
     async generate(args) {
         // no-op
@@ -41,10 +66,10 @@ class ImageGenerator {
         const instance = await phantom.create(['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1']);
         const page = await instance.createPage();
 
-        page.on('onConsoleMessage', function(msg) {
+        page.on('onConsoleMessage', function (msg) {
             console.debug('[IM]', msg);
         });
-        page.on('onResourceError', function(resourceError) {
+        page.on('onResourceError', function (resourceError) {
             console.error(resourceError.url + ': ' + resourceError.errorString);
         });
 
@@ -54,7 +79,7 @@ class ImageGenerator {
         await page.on('viewportSize', { width: 1440, height: 900 });
         await page.on('zoomFactor', scale);
 
-        let rect = await page.evaluate(function(message) {
+        let rect = await page.evaluate(function (message) {
             var keys = Object.keys(message);
             for (var i = 0; i < keys.length; i++) {
                 var thing = document.getElementById(keys[i]);
@@ -115,14 +140,14 @@ class ImageGenerator {
     }
 
     getResource(url) {
-        return new Promise(async function(resolve, reject) {
+        return new Promise(async function (resolve, reject) {
             url = url.trim();
             if (url.startsWith('<') && url.endsWith('>')) {
                 url = url.substring(1, url.length - 1);
             }
             let res = await this.request.get(url);
             if (res.headers['content-type'] == 'image/gif') {
-                this.gm(res.body, 'temp.gif').selectFrame(0).setFormat('png').toBuffer(function(err, buffer) {
+                this.gm(res.body, 'temp.gif').selectFrame(0).setFormat('png').toBuffer(function (err, buffer) {
                     if (err) {
                         console.error('Error converting gif');
                         reject(err);
@@ -180,7 +205,7 @@ class ImageGenerator {
                 image.out('-composite');
             }
             image.setFormat('png');
-            image.toBuffer(function(err, buf) {
+            image.toBuffer(function (err, buf) {
                 if (err) {
                     console.error(`[IM] Failed to generate a caption: '${options.text}'`);
                     reject(err);
@@ -193,7 +218,7 @@ class ImageGenerator {
 
     getBufferFromIM(img) {
         return new Promise((resolve, reject) => {
-            img.setFormat('png').toBuffer(function(err, buffer) {
+            img.setFormat('png').toBuffer(function (err, buffer) {
                 if (err) {
                     reject(err);
                     return;
