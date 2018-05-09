@@ -2,12 +2,12 @@
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
       <!-- Title -->
-      <span class="mdl-layout-title">blargbot API</span>
+      <router-link class="mdl-layout-title mdl-navigation__link" to="/">blargbot API</router-link>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation -->
       <nav class="mdl-navigation">
-            <router-link to='/docs' class="mdl-navigation__link">Documentation</router-link>
+        <router-link to='/docs' class="mdl-navigation__link">Documentation</router-link>
       </nav>
     </div>
   </header>

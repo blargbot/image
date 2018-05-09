@@ -24,7 +24,14 @@ pre code {
 }
 
 code {
-    background: #fce4ec ;
-    border-radius: 3px; 
-    padding: 2px;
+    background: #d1fcf5;
+    border-radius: 4px; 
+    padding: 2px 4px;
+}
+
+a.mdl-navigation__link {
+    transition-duration: 0.2s;
+}
+a.mdl-navigation__link:hover {
+    background: rgba(0,0,0,0.1);
 }
