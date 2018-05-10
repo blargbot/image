@@ -21,7 +21,7 @@ class PoemGenerator extends Generator {
         let container = [];
         let italic = false;
         let temp = '';
-        let m = msg.text;
+        let m = args.text;
         for (var i = 0; i < m.length; i++) {
             if (m[i] === '*') {
                 container.push({ italic, text: temp });
@@ -43,38 +43,37 @@ class PoemGenerator extends Generator {
 
         await this.send(base64);
     }
-
-    resize() {
-        var el, elements, _i, _len, _results;
-        elements = document.getElementsByClassName('resize');
-        wrapper = document.getElementById('wrapper');
-        if (elements.length < 0) {
-            return;
-        }
-        _results = [];
-        for (_i = 0, _len = elements.length; _i < _len; _i++) {
-            el = elements[_i];
-            _results.push((function (el) {
-                var resizeText, _results1;
-                if (el.style['font-size'] === '') el.style['font-size'] = '65px';
-                resizeText = function () {
-                    var elNewFontSize;
-                    elNewFontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + 'px';
-                    console.log(elNewFontSize);
-                    el.style.fontSize = elNewFontSize;
-                    return el;
-                };
-                _results1 = null;
-                var ii = 0;
-                while (el.scrollHeight > wrapper.clientHeight) {
-                    _results1 = resizeText();
-                    if (++ii == 1000) break;
-                }
-                return _results1;
-            })(el));
+    get resize() {
+        return function () {
+            var el, elements, _i, _len, _results;
+            elements = document.getElementsByClassName('resize');
+            wrapper = document.getElementById('wrapper');
+            if (elements.length < 0) {
+                return;
+            }
+            _results = [];
+            for (_i = 0, _len = elements.length; _i < _len; _i++) {
+                el = elements[_i];
+                _results.push((function (el) {
+                    var resizeText, _results1;
+                    if (el.style['font-size'] === '') el.style['font-size'] = '65px';
+                    resizeText = function () {
+                        var elNewFontSize;
+                        elNewFontSize = (parseInt(el.style.fontSize.slice(0, -2)) - 1) + 'px';
+                        el.style.fontSize = elNewFontSize;
+                        return el;
+                    };
+                    _results1 = null;
+                    var ii = 0;
+                    while (el.scrollHeight > wrapper.clientHeight) {
+                        _results1 = resizeText();
+                        if (++ii == 1000) break;
+                    }
+                    return _results1;
+                })(el));
+            }
         }
     }
-
 }
 
 module.exports = PoemGenerator;
