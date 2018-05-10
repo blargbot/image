@@ -18,8 +18,8 @@ class Metrics {
             buckets: [300, 400, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000]
         });
 
-        this.usageCounter = new Prometheus.Counter({
-            name: 'api_usage_counter',
+        this.usageGauge = new Prometheus.Gauge({
+            name: 'api_usage_gauge',
             help: 'Tracks the API usage',
             labelNames: ['endpoint', 'userid']
         });
