@@ -7,7 +7,7 @@ class Metrics {
         this.httpRequestDurationMS = new Prometheus.Histogram({
             name: 'http_request_duration_ms',
             help: 'Duration of HTTP requests in MS',
-            labelNames: ['route', 'successful'],
+            labelNames: ['endpoint', 'successful'],
             buckets: [300, 400, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000]
         });
 
