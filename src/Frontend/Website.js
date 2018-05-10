@@ -5,6 +5,7 @@ const passport = require('passport');
 const Strategy = require('passport-discord').Strategy;
 const session = require('express-session');
 const cons = require('consolidate');
+const Metrics = require('../Core/Metrics');
 
 const { Nuxt, Builder } = require('nuxt');
 
@@ -17,6 +18,7 @@ class Website {
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
+        this.Metrics = new Metrics();
 
         const nuxtConfig = require('./nuxt.config.js');
         this.nuxt = new Nuxt(nuxtConfig);
@@ -80,6 +82,7 @@ class Website {
         this.app.set('view engine', 'html');
         this.app.use('/', express.static(path.join(__dirname, 'public')));
         this.app.use('/security', new (require('./routes/security'))(this).router);
+        this.app.use('/metrics', new (require('./routes/metrics'))(this).router);
         this.app.use(this.nuxt.render);
         this.app.use('/api/v1', new (require('./routes/apiv1'))(this).router);
     }

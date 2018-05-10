@@ -5,6 +5,7 @@ const childProcess = require('child_process');
 const path = require('path');
 const Security = require('../../Core/Security');
 const fs = require('fs');
+const Timer = require('../../Structures/Timer');
 
 function getImage(name, args) {
     return new Promise((res, rej) => {
@@ -28,6 +29,7 @@ function getImage(name, args) {
 class ApiRoute {
     constructor(website) {
         this.website = website;
+        this.Metrics = website.Metrics;
         this.router = router;
 
         let dir = fs.readdirSync(path.join(__dirname, '..', '..', 'Generators'));
@@ -49,6 +51,9 @@ class ApiRoute {
         });
 
         router.post('/image/:type', async (req, res) => {
+            let timer = new Timer();
+            timer.start();
+            let success = false;
             let u = await Security.validateToken(req.headers.authorization);
             if (u === null) {
                 res.status(403);
@@ -76,7 +81,12 @@ class ApiRoute {
                 let { image, contentType } = await getImage(type, req.body);
                 res.set('Content-Type', contentType || 'image/png');
                 res.send(new Buffer.from(image, 'base64'));
+                success = true;
             }
+            timer.end();
+            this.Metrics.httpRequestDurationMS
+                .labels('apiv1/image/' + req.params.type, success)
+                .observe(timer.elapsed);
         });
     }
 
