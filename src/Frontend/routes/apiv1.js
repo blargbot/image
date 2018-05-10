@@ -6,34 +6,11 @@ const path = require('path');
 const Security = require('../../Core/Security');
 const fs = require('fs');
 const Timer = require('../../Structures/Timer');
-let metrics;
-function getImage(name, args) {
-    return new Promise((res, rej) => {
-        let env = {
-            IMAGE_TYPE: name,
-            IMAGE_ARGS: JSON.stringify(args),
-            DESTINATION: 'api'
-        };
-        let timer = new Timer().start();
-        let cp = childProcess.fork(path.join(__dirname, '..', '..', 'Core', 'Image.js'), [], {
-            env
-        });
-
-        cp.on('message', (msg) => {
-            timer.end();
-            res(msg);
-            this.Metrics.imageGenDurationMS
-                .labels(name)
-                .observe(timer.elapsed);
-        });
-    });
-
-}
 
 class ApiRoute {
     constructor(website) {
         this.website = website;
-        metrics = this.Metrics = website.Metrics;
+        this.Metrics = website.Metrics;
         this.router = router;
 
         let dir = fs.readdirSync(path.join(__dirname, '..', '..', 'Generators'));
@@ -82,7 +59,7 @@ class ApiRoute {
                         message: err.message
                     }));
                 }
-                let { image, contentType } = await getImage(type, req.body);
+                let { image, contentType } = await this.getImage(type, req.body);
                 res.set('Content-Type', contentType || 'image/png');
                 res.send(new Buffer.from(image, 'base64'));
                 success = true;
@@ -92,6 +69,29 @@ class ApiRoute {
                 .labels('apiv1/image/' + req.params.type, success)
                 .observe(timer.elapsed);
         });
+    }
+
+    getImage(name, args) {
+        return new Promise((res, rej) => {
+            let env = {
+                IMAGE_TYPE: name,
+                IMAGE_ARGS: JSON.stringify(args),
+                DESTINATION: 'api'
+            };
+            let timer = new Timer().start();
+            let cp = childProcess.fork(path.join(__dirname, '..', '..', 'Core', 'Image.js'), [], {
+                env
+            });
+
+            cp.on('message', (msg) => {
+                timer.end();
+                res(msg);
+                this.Metrics.imageGenDurationMS
+                    .labels(name)
+                    .observe(timer.elapsed);
+            });
+        });
+
     }
 
 }
