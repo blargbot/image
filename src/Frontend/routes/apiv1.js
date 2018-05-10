@@ -33,6 +33,7 @@ class ApiRoute {
 
         router.post('/image/:type', async (req, res) => {
             let timer = new Timer();
+            let fullEndpoint = 'api/v1/image/' + req.params.type;
             timer.start();
             let success = false;
             let u = await Security.validateToken(req.headers.authorization);
@@ -59,7 +60,7 @@ class ApiRoute {
                         message: err.message
                     }));
                 }
-                this.Metrics.usageCounter.labels('apiv1/image/' + req.params.type, u).inc(1);
+                this.Metrics.usageCounter.labels(fullEndpoint, u).inc(1);
                 let { image, contentType } = await this.getImage(type, req.body);
                 res.set('Content-Type', contentType || 'image/png');
                 res.send(new Buffer.from(image, 'base64'));
@@ -67,7 +68,7 @@ class ApiRoute {
             }
             timer.end();
             this.Metrics.httpRequestDurationMS
-                .labels('apiv1/image/' + req.params.type, success)
+                .labels(fullEndpoint, success)
                 .observe(timer.elapsed);
         });
     }
