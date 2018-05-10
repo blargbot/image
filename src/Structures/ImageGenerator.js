@@ -88,7 +88,7 @@ class ImageGenerator {
         let dPath = this.getLocalResourcePath(file);
         const status = await page.open(dPath);
 
-        await page.property('viewportSize', { width: 1440, height: 900 });
+        //await page.property('viewportSize', { width: 1440, height: 900 });
         await page.property('zoomFactor', scale);
 
         let rect = await page.evaluate(function (message) {
