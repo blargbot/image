@@ -59,6 +59,7 @@ class ApiRoute {
                         message: err.message
                     }));
                 }
+                this.Metrics.usageCounter.labels({ endpoint: 'apiv1/image/' + req.params.type, userid: u });
                 let { image, contentType } = await this.getImage(type, req.body);
                 res.set('Content-Type', contentType || 'image/png');
                 res.send(new Buffer.from(image, 'base64'));
