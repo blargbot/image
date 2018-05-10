@@ -60,7 +60,7 @@ class ApiRoute {
                         message: err.message
                     }));
                 }
-                this.Metrics.usageGauge.labels(fullEndpoint, u).inc(1);
+                this.Metrics.usageCounter.labels(fullEndpoint, u).inc(1);
                 let { image, contentType } = await this.getImage(type, req.body);
                 res.set('Content-Type', contentType || 'image/png');
                 res.send(new Buffer.from(image, 'base64'));
