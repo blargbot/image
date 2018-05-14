@@ -21,6 +21,7 @@ class Website {
         this.Metrics = new Metrics();
 
         const nuxtConfig = require('./nuxt.config.js');
+        console.log(__dirname);
         this.nuxt = new Nuxt(nuxtConfig);
         if (this.nuxt.options.dev) {
             new Builder(this.nuxt).build();
