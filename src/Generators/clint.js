@@ -5,6 +5,7 @@ class ClintGenerator extends Generator {
         super({
             title: 'Clint',
             description: 'Shows a picture of Clint staring at something on a monitor.',
+            example: '/img/example/clint.png',
             body: [
                 {
                     name: "image",
@@ -29,7 +30,7 @@ class ClintGenerator extends Generator {
         bgImg.out("0,0,0,132  700,0,330,0  0,700,0,530  700,700,330,700");
         let jBgImg = await this.Jimp.read(await this.getBufferFromIM(bgImg));
         let foreground = await this.Jimp.read(await this.getLocalResource('clint.png'));
-        let img = new this.Jimp(1200, 675);
+        let img = new this.Jimp(1200, 675, 0x000000ff);
         img.composite(jBgImg, 782, 0);
 
         img.composite(foreground, 0, 0);
