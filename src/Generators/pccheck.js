@@ -34,10 +34,8 @@ class PoemGenerator extends Generator {
                 temp += m[i];
         }
         container.push({ italic, text: temp });
-        console.log(container.filter(w => w.italic).length, container.length);
         if (container.length > 1 && container.filter(w => w.italic).length === 0) {
             let filtered = container.filter(w => w.text.length > 3);
-            console.log(filtered);
             if (filtered.length > 0) {
                 let rand = filtered[Math.floor(Math.random() * filtered.length)];
                 rand.italic = true;
