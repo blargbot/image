@@ -26,7 +26,7 @@ class Metrics {
 
         this.collectDefaultMetrics = Prometheus.collectDefaultMetrics;
 
-        this.collectDefaultMetrics({ timeout: 5000 });
+        this.collectDefaultMetrics();
     }
 }
 

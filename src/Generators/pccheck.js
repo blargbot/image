@@ -22,15 +22,27 @@ class PoemGenerator extends Generator {
         let italic = false;
         let temp = '';
         let m = args.text;
-        for (var i = 0; i < m.length; i++) {
+        for (let i = 0; i < m.length; i++) {
             if (m[i] === '*') {
                 container.push({ italic, text: temp });
                 temp = '';
                 italic = !italic;
+            } else if (m[i] === ' ' || m[i] === '\n') { 
+                container.push({ italic, text: temp + ' ' });
+                temp = '';
             } else
                 temp += m[i];
         }
         container.push({ italic, text: temp });
+        console.log(container.filter(w => w.italic).length, container.length);
+        if (container.length > 1 && container.filter(w => w.italic).length === 0) {
+            let filtered = container.filter(w => w.text.length > 3);
+            console.log(filtered);
+            if (filtered.length > 0) {
+                let rand = filtered[Math.floor(Math.random() * filtered.length)];
+                rand.italic = true;
+            }    
+        }
         let base64 = await this.renderPhantom('pccheck.html', {}, 2, 'PNG',
             [function (m) {
                 var thing = document.getElementById('replace1');
