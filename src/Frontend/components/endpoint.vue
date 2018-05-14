@@ -31,7 +31,7 @@
       </tbody>
     </table>
     <h4>Example:</h4>
-    <!-- <img :src='"/img/example/" + identifier + ".png"'> -->
+    <img :src='"/img/example/" + identifier + ".png"'>
   </div>
 </template>
 

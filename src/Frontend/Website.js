@@ -74,9 +74,9 @@ class Website {
             delete req.session.user;
             res.redirect(req.session.returnTo || '/');
         });
-        this.app.get('/', (req, res) => {
-            res.redirect('/app');
-        });
+        // this.app.get('/', (req, res) => {
+        //     res.redirect('/app');
+        // });
         this.app.engine('html', cons.swig);
         this.app.set('views', path.join(__dirname, 'views'));
         this.app.set('view engine', 'html');
