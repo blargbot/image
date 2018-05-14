@@ -1,12 +1,10 @@
 module.exports = {
     dev: _config.beta,
-    srcDir: 'src/Frontend/',
+    srcDir: 'src/Frontend',
     build: {
         vendor: ['axios'],
         extractCSS: true
     },
-    css: [
-    ],
     head: {
         meta: [{
             name: 'viewport',
