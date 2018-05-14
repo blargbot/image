@@ -26,7 +26,6 @@ export default {
     axios
       .get("/api/v1/data/")
       .then(res => {
-        console.log(res.data);
         this.endpoints = res.data;
       })
       .catch(err => {
