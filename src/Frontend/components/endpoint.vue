@@ -30,12 +30,18 @@
         </tr>
       </tbody>
     </table>
+    <h4>Example:</h4>
+    <img :src='"/img/example/" + identifier + ".png"'>
   </div>
 </template>
 
 <script>
 export default {
   props: {
+    identifier: {
+      type: String,
+      default: "example"
+    },
     endpoint: {
       type: Object,
       default: function() {
@@ -99,5 +105,9 @@ table.body-params code {
 
 .endpoint-wrapper {
   margin: 30px 0;
+}
+
+img {
+  width: 100%;
 }
 </style>

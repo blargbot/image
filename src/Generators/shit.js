@@ -36,7 +36,7 @@ class ShitGenerator extends Generator {
         return function () {
             var el, elements, _i, _len, _results, wrapper;
             elements = document.getElementsByClassName('resize');
-            wrapper = document.getElementById('shit-wrapper');
+            wrapper = document.getElementById('wrapper');
             if (elements.length < 0) {
                 return;
             }
