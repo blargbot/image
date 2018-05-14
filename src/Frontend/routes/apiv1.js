@@ -61,10 +61,17 @@ class ApiRoute {
                     }));
                 }
                 this.Metrics.usageCounter.labels(fullEndpoint, u).inc(1);
-                let { image, contentType } = await this.getImage(type, req.body);
-                res.set('Content-Type', contentType || 'image/png');
-                res.send(new Buffer.from(image, 'base64'));
-                success = true;
+                try {
+                    let { image, contentType } = await this.getImage(type, req.body);
+                    res.set('Content-Type', contentType || 'image/png');
+                    res.send(new Buffer.from(image, 'base64'));
+                    success = true;
+                } catch (err) {
+                    console.log(err);
+                    res.status(err.code || 500);
+                    res.end(JSON.stringify(err, null, 4));
+                    success = false;
+                }
             }
             timer.end();
             this.Metrics.httpRequestDurationMS
@@ -87,11 +94,22 @@ class ApiRoute {
 
             cp.on('message', (msg) => {
                 timer.end();
-                res(msg);
-                this.Metrics.imageGenDurationMS
-                    .labels(name)
-                    .observe(timer.elapsed);
+                if (msg.error) {
+                    timer.end();
+                    console.error(msg);
+                    rej(msg);
+                } else {
+                    res(msg);
+                    this.Metrics.imageGenDurationMS
+                        .labels(name)
+                        .observe(timer.elapsed);
+                }
             });
+            cp.on('error', (err) => {
+                timer.end();
+                console.error(err);
+                rej(err);
+            })
         });
 
     }

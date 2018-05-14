@@ -140,7 +140,7 @@ class ImageGenerator {
     getLocalResource(name, encoding = null) {
         return new Promise((resolve, reject) => {
             let filePath = this.path.join(this.resourceDir, name);
-            fs.readFile(name, { encoding }, (err, res) => {
+            fs.readFile(filePath, { encoding }, (err, res) => {
                 if (err) reject(err);
                 else resolve(res);
             });
@@ -151,8 +151,19 @@ class ImageGenerator {
         return this.path.join(this.resourceDir, name).replace(/\\/g, '/').replace(/^\w:/, '');
     }
 
+    async decodeImage(text) {
+        let resource;
+        if (text.startsWith('http'))
+            resource = await this.getResource(text);
+        else if (Buffer.isBuffer(text))
+            resource = text;
+        else
+            resource = Buffer.from(text, 'base64');
+        return resource;
+    }
+
     getResource(url) {
-        return new Promise(async function (resolve, reject) {
+        return new Promise(async (resolve, reject) => {
             url = url.trim();
             if (url.startsWith('<') && url.endsWith('>')) {
                 url = url.substring(1, url.length - 1);
