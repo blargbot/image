@@ -1,5 +1,12 @@
+let beta;
+try {
+    beta = _config.beta === true;
+} catch (err) {
+    beta = false;
+}
+
 module.exports = {
-    dev: _config.beta,
+    dev: beta,
     srcDir: 'src/Frontend',
     build: {
         vendor: ['axios'],
