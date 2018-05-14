@@ -27,7 +27,7 @@ class PoemGenerator extends Generator {
                 container.push({ italic, text: temp });
                 temp = '';
                 italic = !italic;
-            } else if (m[i] === ' ' || m[i] === '\n') { 
+            } else if (m[i] === ' ' || m[i] === '\n') {
                 container.push({ italic, text: temp + ' ' });
                 temp = '';
             } else
@@ -35,11 +35,11 @@ class PoemGenerator extends Generator {
         }
         container.push({ italic, text: temp });
         if (container.length > 1 && container.filter(w => w.italic).length === 0) {
-            let filtered = container.filter(w => w.text.length > 3);
+            let filtered = container.filter(w => w.text.trim().length > 3);
             if (filtered.length > 0) {
                 let rand = filtered[Math.floor(Math.random() * filtered.length)];
                 rand.italic = true;
-            }    
+            }
         }
         let base64 = await this.renderPhantom('pccheck.html', {}, 2, 'PNG',
             [function (m) {
