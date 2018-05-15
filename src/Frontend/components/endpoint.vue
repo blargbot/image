@@ -1,6 +1,6 @@
 <template>
   <div class='endpoint-wrapper'>
-    <h3>{{endpoint.title}}</h3>
+    <h3 :id='endpoint.endpoint'>{{endpoint.title}}</h3>
     <div class='endpoint'>
       <span class='method'>{{endpoint.method}}</span>
       <code>{{endpoint.endpoint}}</code>
