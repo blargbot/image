@@ -6,13 +6,14 @@ const Strategy = require('passport-discord').Strategy;
 const session = require('express-session');
 const cons = require('consolidate');
 const Metrics = require('../Core/Metrics');
-
+const Bot = require('../Core/Bot');
 const { Nuxt, Builder } = require('nuxt');
 
 
 class Website {
     constructor(port = 8079) {
         this.port = port;
+        this.bot = new Bot(this);
         this.app = express();
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({

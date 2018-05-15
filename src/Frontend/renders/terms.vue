@@ -5,7 +5,10 @@
         <h2>Terms</h2>
         <ul>
             <li>The blargbot API ("Service") is a web-based Application Programming Interface ("API") which serves generated images based on user input.</li>
-            <li>Use of the Service is restricted and monitored by use of Authentication Tokens ("Tokens"). A Token is required to access the API, and is tied explicitly to a user's Discord Account ("User").</li>
+            <li>Use of the Service is restricted and monitored by use of Authentication Tokens ("Tokens"). A Token is required to access the API, and is tied explicitly to a Discord Account ("User").</li>
+            <li>Being in the Discord Guild "Cat Town" (
+                <a href='https://discord.gg/015GVxZxI8rtlJgXF'>invite</a> ) is a service requirement for communication purposes. Leaving the Guild may cause your Token to be invalidated.
+            </li>
             <li>Abusing or exploiting the Service in any way may result in the Token being revoked with or without warning. "Abuse" may be characterized, but not limited to, the following:
                 <ul>
                     <li>Spamming the server with requests (ex. DDoS)</li>
@@ -28,5 +31,4 @@ export default {};
 </script>
 
 <style>
-
 </style>
