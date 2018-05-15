@@ -36,6 +36,7 @@ class ImageGenerator {
         this.title = args.title;
         this.description = args.description;
         this.body = args.body;
+        this.type = 'png';
 
         // gif rendering stuff
         this.encoder = null;
@@ -69,7 +70,8 @@ class ImageGenerator {
         return {
             title: this.title,
             description: this.description,
-            body: this.body
+            body: this.body,
+            type: this.type
         };
     }
 

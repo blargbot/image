@@ -23,6 +23,7 @@ class ClintGenerator extends Generator {
                 }
             ]
         });
+        this.type = 'gif';
     }
     async generate(args) {
         await super.generate(args);

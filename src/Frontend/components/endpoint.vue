@@ -30,13 +30,36 @@
         </tr>
       </tbody>
     </table>
-    <h4>Example:</h4>
-    <img :src='"/img/example/" + identifier + ".png"'>
+    <div class='mdl-card mdl-shadow--2dp example-card'>
+      <div class='mdl-card__title' v-on:click='toggleDropdown'>
+        <div class='mdl-card__title-text'>
+          Example: Click Here
+        </div>
+      </div>
+      <div class='dropdown'>
+        <img :src='"/img/example/" + identifier + "." + endpoint.type'>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  methods: {
+    toggleDropdown(event) {
+      this.toggled = !this.toggled;
+      let t = event.target;
+      if (t.className.endsWith("-text")) t = t.parentElement;
+      t = t.parentElement;
+      let d = t.querySelector(".dropdown");
+      let i = t.querySelector("img");
+      if (this.toggled) d.style.maxHeight = i.height + "px";
+      else d.style.maxHeight = "0";
+    }
+  },
+  data: () => ({
+    toggle: false
+  }),
   props: {
     identifier: {
       type: String,
@@ -50,6 +73,7 @@ export default {
           endpoint: "/image/example",
           method: "POST",
           description: "This is an example endpoint.",
+          type: "png",
           body: [
             {
               name: "text",
@@ -71,6 +95,27 @@ export default {
 </script>
 
 <style scoped>
+.example-card .dropdown {
+  max-height: 0px;
+  transition-duration: 0.5s;
+}
+.example-card.toggled .dropdown {
+  max-height: 800px;
+}
+.example-card {
+  margin: 20px auto;
+  width: 512px;
+  min-height: 0;
+}
+.example-card .mdl-card__title-text {
+  user-select: none;
+}
+.example-card .mdl-card__title {
+  cursor: pointer;
+}
+.example-card .mdl-card__title:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
 .endpoint {
   font-size: 1.3em;
   margin-bottom: 10px;
