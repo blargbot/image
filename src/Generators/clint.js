@@ -1,4 +1,5 @@
 const Generator = require('../Structures/ImageGenerator');
+const Jimp = require('jimp');
 
 class ClintGenerator extends Generator {
     constructor() {
@@ -20,7 +21,7 @@ class ClintGenerator extends Generator {
         await super.generate(args);
         let r = await this.decodeImage(args.image);
 
-        let avatar = await this.Jimp.read(r);
+        let avatar = await Jimp.read(r);
         avatar.resize(700, 700);
         let bgImg = this.im(await this.getBufferFromJimp(avatar));
         bgImg.command('convert');
@@ -28,9 +29,9 @@ class ClintGenerator extends Generator {
         bgImg.out('-distort');
         bgImg.out('Perspective');
         bgImg.out("0,0,0,132  700,0,330,0  0,700,0,530  700,700,330,700");
-        let jBgImg = await this.Jimp.read(await this.getBufferFromIM(bgImg));
-        let foreground = await this.Jimp.read(await this.getLocalResource('clint.png'));
-        let img = new this.Jimp(1200, 675, 0x000000ff);
+        let jBgImg = await Jimp.read(await this.getBufferFromIM(bgImg));
+        let foreground = await Jimp.read(await this.getLocalResource('clint.png'));
+        let img = new Jimp(1200, 675, 0x000000ff);
         img.composite(jBgImg, 782, 0);
 
         img.composite(foreground, 0, 0);
