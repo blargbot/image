@@ -38,8 +38,7 @@ class ClintGenerator extends Generator {
                     name: "bottom",
                     type: 'string',
                     optional: true,
-                    description: 'The bottom text.',
-                    default: 'Click here to find out how'
+                    description: 'The bottom text.'
                 },
                 {
                     name: "font",
