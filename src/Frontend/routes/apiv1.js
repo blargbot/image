@@ -48,6 +48,10 @@ class ApiRoute {
             let u = await SiteSecurity.validateRequest(req);
             if (u) {
                 let du = website.bot.users.get(u);
+                if (!du) return res.status(404).send(JSON.stringify({
+                    code: 404,
+                    message: 'User not found.'
+                }));
                 let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
                 let user = {
                     username: du.username,
