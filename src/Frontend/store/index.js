@@ -36,7 +36,7 @@ export const actions = {
             console.log(user);
             commit('setUser', normalizeUser(user))
         } catch (err) {
-            console.error(err);
+            console.error(err.response ? err.response.data : 'no data', err);
         }
         // }
     }
