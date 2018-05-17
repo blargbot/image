@@ -28,6 +28,7 @@ export const actions = {
         // } else {
         try {
             let user = await app.$axios.$get('/user/@me', {
+                withCredentials: true,
                 headers: {
                     cookie: req.headers.cookie
                 }
