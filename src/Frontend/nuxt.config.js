@@ -16,7 +16,7 @@ module.exports = {
         ["@nuxtjs/axios", {
             baseURL: beta ? 'http://localhost:8079/api/v1' : 'https://api.blargbot.xyz/api/v1',
             proxyHeadersIgnore: ['host', 'accept', 'cf-ray', 'cf-connecting-ip'],
-            proxyHeaders: false
+            proxyHeaders: true
         }]
     ],
     head: {

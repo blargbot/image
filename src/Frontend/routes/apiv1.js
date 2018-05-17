@@ -35,14 +35,15 @@ class ApiRoute {
 
         router.get('/user/@me/token', async (req, res) => {
             let u = await SiteSecurity.validateRequest(req);
-            let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
-            console.log(u, dataUser);
-            if (dataUser) {
-                let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
-                res.send(JSON.stringify({ token }));
-            } else {
-                res.status(400).send(JSON.stringify({ error: 400, message: 'You do not have an account. Contact stupid cat#8160.' }));
-            }
+            if (u) {
+                let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+                if (dataUser) {
+                    let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
+                    res.send(JSON.stringify({ token }));
+                } else {
+                    res.status(400).send(JSON.stringify({ error: 400, message: 'You do not have an account. Contact stupid cat#8160.' }));
+                }
+            } else this.errorAuthorization(res);
         });
 
         router.get('/user/@me', async (req, res) => {

@@ -31,11 +31,7 @@ export const actions = {
             try {
                 let parsed = cookieparser.parse(req.headers.cookie);
                 if (parsed.stoken) {
-                    let user = await app.$axios.$get('/user/@me', {
-                        headers: {
-                            authorization: parsed.stoken
-                        }
-                    });
+                    let user = await app.$axios.$get('/user/@me');
                     console.log(user);
                     commit('setUser', normalizeUser(user))
                 }

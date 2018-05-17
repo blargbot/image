@@ -11,9 +11,11 @@ class SiteSecurity {
     }
 
     static async validateRequest(req) {
-        let p = req.headers.authorization;
-        if (p) {
-            return SiteSecurity.validateToken(p);
+        // let p = req.headers.authorization;
+        // if (p) {
+        let p = cookieparser.parse(req.headers.cookie)
+        if (p.stoken) {
+            return SiteSecurity.validateToken(p.stoken);
         } else return null;
     }
 
