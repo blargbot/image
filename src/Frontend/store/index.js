@@ -34,8 +34,7 @@ export const actions = {
                     let user = await app.$axios.$get('/user/@me', {
                         headers: {
                             authorization: parsed.stoken
-                        },
-                        proxyHeaders: false
+                        }
                     });
                     console.log(user);
                     commit('setUser', normalizeUser(user))
