@@ -69,7 +69,7 @@ class Website {
             failureRedirect: '/'
         }), async (req, res) => {
             let token = await SiteSecurity.generateToken(req.user.id);
-            res.cookie('stoken', token, { maxAge: 900000 });
+            res.cookie('stoken', token, { maxAge: 24 * 60 * 60 * 1000 });
             req.session.user = req.user;
             res.redirect(req.session.returnTo || '/');
         });
