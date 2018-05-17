@@ -49,7 +49,6 @@ class ApiRoute {
             if (u) {
                 let du = website.bot.users.get(u);
                 let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
-                console.log(dataUser);
                 let user = {
                     username: du.username,
                     discriminator: du.discriminator,

@@ -26,6 +26,7 @@ export const actions = {
         // if (req.session.user) {
         //     commit('setUser', normalizeUser(req.session.user));
         // } else {
+        console.log(req.headers.cookie);
         try {
             let user = await app.$axios.$get('/user/@me', {
                 headers: {
