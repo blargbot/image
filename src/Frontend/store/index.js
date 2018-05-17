@@ -35,7 +35,7 @@ export const actions = {
             console.log(user);
             commit('setUser', normalizeUser(user))
         } catch (err) {
-
+            console.error(err);
         }
         // }
     }
