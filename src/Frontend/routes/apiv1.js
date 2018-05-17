@@ -36,6 +36,7 @@ class ApiRoute {
         router.get('/user/@me/token', async (req, res) => {
             let u = await SiteSecurity.validateRequest(req);
             let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+            console.log(dataUser);
             if (dataUser) {
                 let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
                 res.send(JSON.stringify({ token }));
