@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import endpoint from "../components/endpoint.vue";
-import axios from "axios";
+import endpoint from "../../components/endpoint.vue";
 
 export default {
   data: () => ({
@@ -30,8 +29,8 @@ export default {
   }),
   components: { endpoint: endpoint },
   mounted() {
-    axios
-      .get("/api/v1/data/")
+    this.$axios
+      .get("/data")
       .then(res => {
         this.endpoints = res.data;
       })

@@ -3,7 +3,9 @@ const moment = require('moment');
 const superagent = require('snekfetch');
 const childProcess = require('child_process');
 const path = require('path');
-const Security = require('../../Core/Security');
+const cookieparser = require('cookieparser');
+const ApiSecurity = require('../../Core/ApiSecurity');
+const SiteSecurity = require('../../Core/SiteSecurity');
 const fs = require('fs');
 const Timer = require('../../Structures/Timer');
 
@@ -31,18 +33,42 @@ class ApiRoute {
             res.send(JSON.stringify(this.endpoints));
         });
 
+        router.get('/user/@me/token', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+            if (dataUser) {
+                let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
+                res.send(JSON.stringify({ token }));
+            } else {
+                res.status(400).send(JSON.stringify({ error: 400, message: 'You do not have an account. Contact stupid cat#8160.' }));
+            }
+        });
+
+        router.get('/user/@me', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u) {
+                let du = website.bot.users.get(u);
+                let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+                console.log(dataUser);
+                let user = {
+                    username: du.username,
+                    discriminator: du.discriminator,
+                    id: u,
+                    avatar: du.avatar,
+                    hasAccount: dataUser != null
+                }
+                res.send(JSON.stringify(user));
+            } else this.errorAuthorization(res);
+        });
+
         router.post('/image/:type', async (req, res) => {
             let timer = new Timer();
             let fullEndpoint = 'api/v1/image/' + req.params.type;
             timer.start();
             let success = false;
-            let u = await Security.validateToken(req.headers.authorization);
+            let u = await ApiSecurity.validateToken(req.headers.authorization);
             if (u === null) {
-                res.status(403);
-                res.send(JSON.stringify({
-                    code: 403,
-                    message: 'Invalid authorization.'
-                }));
+                this.errorAuthorization();
             } else if (!this.endpoints[req.params.type]) {
                 res.status(404);
                 res.send(JSON.stringify({
@@ -78,6 +104,14 @@ class ApiRoute {
                 .labels(fullEndpoint, success)
                 .observe(timer.elapsed);
         });
+    }
+
+    errorAuthorization(res) {
+        res.status(403);
+        res.send(JSON.stringify({
+            code: 403,
+            message: 'Invalid authorization.'
+        }));
     }
 
     getImage(name, args) {

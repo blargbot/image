@@ -12,13 +12,19 @@ module.exports = {
         vendor: ['axios'],
         extractCSS: true
     },
+    modules: [
+        ["@nuxtjs/axios", {
+            prefix: "/api/v1",
+            port: 8079
+        }]
+    ],
     head: {
         meta: [{
             name: 'viewport',
             content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
         }],
         script: [
-            'https://code.getmdl.io/1.3.0/material.min.js'
+            { src: 'https://code.getmdl.io/1.3.0/material.min.js', body: true }
         ],
         link: [
             { rel: 'shortcut icon', type: 'image/png', href: '/img/favicon.png' },
@@ -29,25 +35,25 @@ module.exports = {
     },
     router: {
         base: '/app/',
-        extendRoutes(routes, resolve) {
-            routes.push({
-                path: '/',
-                component: resolve(__dirname, 'renders/wrapper.vue'),
-                children: [
-                    {
-                        name: 'main', path: '/',
-                        component: resolve(__dirname, 'renders/index.vue')
-                    },
-                    {
-                        name: 'terms', path: '/terms',
-                        component: resolve(__dirname, 'renders/terms.vue')
-                    },
-                    {
-                        name: 'docs', path: '/docs',
-                        component: resolve(__dirname, 'renders/docs.vue')
-                    },
-                ]
-            });
-        }
+        // extendRoutes(routes, resolve) {
+        //     routes.push({
+        //         path: '/',
+        //         component: resolve(__dirname, 'renders/wrapper.vue'),
+        //         children: [
+        //             {
+        //                 name: 'main', path: '/',
+        //                 component: resolve(__dirname, 'renders/index.vue')
+        //             },
+        //             {
+        //                 name: 'terms', path: '/terms',
+        //                 component: resolve(__dirname, 'renders/terms.vue')
+        //             },
+        //             {
+        //                 name: 'docs', path: '/docs',
+        //                 component: resolve(__dirname, 'renders/docs.vue')
+        //             },
+        //         ]
+        //     });
+        // }
     }
 };

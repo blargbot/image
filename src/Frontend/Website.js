@@ -7,6 +7,7 @@ const session = require('express-session');
 const cons = require('consolidate');
 const Metrics = require('../Core/Metrics');
 const Bot = require('../Core/Bot');
+const SiteSecurity = require('../Core/SiteSecurity');
 const { Nuxt, Builder } = require('nuxt');
 
 
@@ -66,14 +67,16 @@ class Website {
         }));
         this.app.get('/callback', passport.authenticate('discord', {
             failureRedirect: '/'
-        }), (req, res) => {
+        }), async (req, res) => {
+            let token = await SiteSecurity.generateToken(req.user.id);
+            res.cookie('stoken', token, { maxAge: 900000 });
             req.session.user = req.user;
             res.redirect(req.session.returnTo || '/');
         });
         this.app.get('/logout', (req, res) => {
             req.logout();
-            delete this.sessionUserMap[req.sessionID];
             delete req.session.user;
+            res.clearCookie('stoken');
             res.redirect(req.session.returnTo || '/');
         });
         this.app.get('/', (req, res) => {

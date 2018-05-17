@@ -29,14 +29,5 @@ export default {
 </script>
 
 <style scoped>
-.mention {
-  color: #7289da;
-  transition: background-color 0.05s, color 0.05s;
-  background-color: rgba(115, 139, 215, 0.1);
-}
-.mention:hover {
-  background-color: rgba(115, 139, 215, 0.7);
-  color: #fff;
-  cursor: pointer;
-}
+
 </style>
