@@ -41,8 +41,7 @@ export const actions = {
                 }
             } catch (err) {
                 console.error(err.response ? err.response.data : 'no data', err);
-                let req = err.request;
-                console.log(req.protocol + '://' + req.get('host') + req.originalUrl);
+                console.meta({ depth: 1 }).log(err.request);
             }
         // }
     }
