@@ -14,7 +14,7 @@ module.exports = {
     },
     modules: [
         ["@nuxtjs/axios", {
-            baseURL: beta ? 'http://localhost:8079/api/v1' : 'http://api.blargbot.xyz/api/v1'
+            baseURL: beta ? 'http://localhost:8079/api/v1' : 'https://api.blargbot.xyz/api/v1'
         }]
     ],
     head: {
