@@ -45,6 +45,7 @@ class ApiRoute {
         });
 
         router.get('/user/@me', async (req, res) => {
+            console.log(req.headers.cookie);
             let u = await SiteSecurity.validateRequest(req);
             if (u) {
                 let du = website.bot.users.get(u);
