@@ -41,7 +41,6 @@ export const actions = {
                 }
             } catch (err) {
                 console.error(err.response ? err.response.data : 'no data', err);
-                console.meta({ depth: 1 }).log(err.request);
             }
         // }
     }
