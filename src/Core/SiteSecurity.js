@@ -11,9 +11,9 @@ class SiteSecurity {
     }
 
     static async validateRequest(req) {
-        let p = cookieparser.parse(req.headers.cookie);
-        if (p.stoken) {
-            return SiteSecurity.validateToken(p.stoken);
+        let p = req.headers.authorization;
+        if (p) {
+            return SiteSecurity.validateToken(p);
         } else return null;
     }
 

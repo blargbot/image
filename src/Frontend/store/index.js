@@ -1,3 +1,4 @@
+const cookieparser = require('cookieparser');
 
 export const state = () => ({
     user: null,
@@ -26,18 +27,22 @@ export const actions = {
         // if (req.session.user) {
         //     commit('setUser', normalizeUser(req.session.user));
         // } else {
-        try {
-            let user = await app.$axios.$get('/user/@me', {
-                withCredentials: true,
-                headers: {
-                    cookie: req.headers.cookie
+        if (req.headers.cookie)
+            try {
+                let parsed = cookieparser.parse(req.headers.cookie);
+                if (parsed.stoken) {
+                    let user = await app.$axios.$get('/user/@me', {
+                        withCredentials: true,
+                        headers: {
+                            authorization: parsed.stoken
+                        }
+                    });
+                    console.log(user);
+                    commit('setUser', normalizeUser(user))
                 }
-            });
-            console.log(user);
-            commit('setUser', normalizeUser(user))
-        } catch (err) {
-            console.error(err.response ? err.response.data : 'no data', err);
-        }
+            } catch (err) {
+                console.error(err.response ? err.response.data : 'no data', err);
+            }
         // }
     }
 }
