@@ -32,6 +32,7 @@ export const actions = {
                     cookie: req.headers.cookie
                 }
             });
+            console.log(user);
             commit('setUser', normalizeUser(user))
         } catch (err) {
 
