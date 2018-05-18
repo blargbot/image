@@ -70,7 +70,7 @@ class ApiRoute {
             if (u) {
                 let dataUser = await _dbModels.User.findById(u);
                 if (dataUser) {
-                    let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
+                    let token = await ApiSecurity.generateToken(u, req.query.invalidate === 'true');
                     res.send(JSON.stringify({ token }));
                 } else {
                     res.status(400).send(JSON.stringify({ error: 400, message: 'You do not have an account. Contact stupid cat#8160.' }));
