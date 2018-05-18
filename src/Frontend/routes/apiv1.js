@@ -105,7 +105,7 @@ class ApiRoute {
             let success = false;
             let u = await ApiSecurity.validateToken(req.headers.authorization);
             if (u === null) {
-                this.errorAuthorization();
+                this.errorAuthorization(res);
             } else if (!this.endpoints[req.params.type]) {
                 res.status(404);
                 res.send(JSON.stringify({
