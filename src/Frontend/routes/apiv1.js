@@ -39,7 +39,7 @@ class ApiRoute {
                 try {
                     let id = req.params.id;
                     let user = await _dbModels.User.build({
-                        userid: id
+                        userid: id, tokenDate: Date.now()
                     });
                     await user.save();
                     res.send({ ok: true });
