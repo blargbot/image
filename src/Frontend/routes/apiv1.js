@@ -55,7 +55,7 @@ class ApiRoute {
                     let id = req.params.id;
                     let user = await _dbModels.User.findById(id);
                     if (!user) {
-                        res.status(400).send({ message: 'User did not exist.' });
+                        return res.status(400).send({ message: 'User did not exist.' });
                     }
                     await user.destroy();
                     res.send({ ok: true });
