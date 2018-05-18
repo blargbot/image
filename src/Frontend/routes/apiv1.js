@@ -46,7 +46,7 @@ class ApiRoute {
                 } catch (err) {
                     res.status(400).send({ message: err.message });
                 }
-            } else return this.errorAuthorization();
+            } else return this.errorAuthorization(res);
         });
         router.delete('/user/:id', async (req, res) => {
             let u = await SiteSecurity.validateRequest(req);
@@ -62,7 +62,7 @@ class ApiRoute {
                 } catch (err) {
                     res.status(400).send({ message: err.message });
                 }
-            } else return this.errorAuthorization();
+            } else return this.errorAuthorization(res);
         });
 
         router.get('/user/@me/token', async (req, res) => {
