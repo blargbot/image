@@ -8,6 +8,9 @@
       <!-- Navigation -->
       <nav class="mdl-navigation">
         <router-link to='/docs' class="mdl-navigation__link">Documentation</router-link>
+        <router-link to='/security' class="mdl-navigation__link"
+          v-if="$store.state.user && $store.state.user.id === '103347843934212096'">
+          Security</router-link>
         <router-link v-if="$store.state.user" to='/user' class="mdl-navigation__link">
           <strong>{{$store.state.user.username}}#{{$store.state.user.discriminator}}</strong>
           <img :src="$store.state.user.avatarURL" class='avatar'>

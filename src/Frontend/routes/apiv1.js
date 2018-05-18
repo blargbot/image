@@ -33,10 +33,42 @@ class ApiRoute {
             res.send(JSON.stringify(this.endpoints));
         });
 
+        router.put('/user/:id', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u === '103347843934212096') {
+                try {
+                    let id = req.params.id;
+                    let user = await _dbModels.User.build({
+                        userid: id
+                    });
+                    await user.save();
+                    res.send({ ok: true });
+                } catch (err) {
+                    res.status(400).send({ message: err.message });
+                }
+            } else return this.errorAuthorization();
+        });
+        router.delete('/user/:id', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u === '103347843934212096') {
+                try {
+                    let id = req.params.id;
+                    let user = await _dbModels.User.findById(id);
+                    if (!user) {
+                        res.status(400).send({ message: 'User did not exist.' });
+                    }
+                    await user.destroy();
+                    res.send({ ok: true });
+                } catch (err) {
+                    res.status(400).send({ message: err.message });
+                }
+            } else return this.errorAuthorization();
+        });
+
         router.get('/user/@me/token', async (req, res) => {
             let u = await SiteSecurity.validateRequest(req);
             if (u) {
-                let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+                let dataUser = await _dbModels.User.findById(u);
                 if (dataUser) {
                     let token = await ApiSecurity.generateToken(u, req.params.invalidate === 'true');
                     res.send(JSON.stringify({ token }));
@@ -54,7 +86,7 @@ class ApiRoute {
                     code: 404,
                     message: 'User not found.'
                 }));
-                let dataUser = await _dbModels.User.findOne({ where: { userid: u } });
+                let dataUser = await _dbModels.User.findById(u);
                 let user = {
                     username: du.username,
                     discriminator: du.discriminator,

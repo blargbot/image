@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class='mdl-textfield mdl-js-textfield field'>
-                <input class="mdl-textfield__input" type="text" id="token" :value="token" readonly>
-                <label class="mdl-textfield__label" for="token"></label>
-            </div>
+            <input class="mdl-textfield__input" type="text" id="token" :value="token" readonly>
+            <label class="mdl-textfield__label" for="token"></label>
+        </div>
         <div class='token-wrapper'>
             <button class='mdl-button mdl-js-button mdl-js-ripple-effect' v-on:click="showToken">
                 Show
@@ -14,10 +14,6 @@
             <button class='mdl-button mdl-js-button mdl-js-ripple-effect' v-on:click="copyToken">
                 Copy
             </button>
-        </div>
-        <div id='snackbar' class="mdl-js-snackbar mdl-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button class="mdl-snackbar__action" type="button"></button>
         </div>
     </div>
 </template>
