@@ -14,7 +14,7 @@ const sequelize = global._db = new Sequelize(_config.db.name, _config.db.user, _
 
 const Models = {
     User: sequelize.define('user', {
-        userid: Sequelize.BIGINT,
+        userid: { type: Sequelize.BIGINT, primaryKey: true },
         tokenDate: Sequelize.DATE,
         uses: { type: Sequelize.JSON, defaultValue: {} }
     })

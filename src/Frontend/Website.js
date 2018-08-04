@@ -6,13 +6,15 @@ const Strategy = require('passport-discord').Strategy;
 const session = require('express-session');
 const cons = require('consolidate');
 const Metrics = require('../Core/Metrics');
-
+const Bot = require('../Core/Bot');
+const SiteSecurity = require('../Core/SiteSecurity');
 const { Nuxt, Builder } = require('nuxt');
 
 
 class Website {
     constructor(port = 8079) {
         this.port = port;
+        this.bot = new Bot(this);
         this.app = express();
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
@@ -21,6 +23,7 @@ class Website {
         this.Metrics = new Metrics();
 
         const nuxtConfig = require('./nuxt.config.js');
+        console.log(__dirname);
         this.nuxt = new Nuxt(nuxtConfig);
         if (this.nuxt.options.dev) {
             new Builder(this.nuxt).build();
@@ -64,14 +67,16 @@ class Website {
         }));
         this.app.get('/callback', passport.authenticate('discord', {
             failureRedirect: '/'
-        }), (req, res) => {
+        }), async (req, res) => {
+            let token = await SiteSecurity.generateToken(req.user.id);
+            res.cookie('stoken', token, { maxAge: 24 * 60 * 60 * 1000 });
             req.session.user = req.user;
             res.redirect(req.session.returnTo || '/');
         });
         this.app.get('/logout', (req, res) => {
             req.logout();
-            delete this.sessionUserMap[req.sessionID];
             delete req.session.user;
+            res.clearCookie('stoken');
             res.redirect(req.session.returnTo || '/');
         });
         this.app.get('/', (req, res) => {

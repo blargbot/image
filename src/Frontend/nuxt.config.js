@@ -1,11 +1,23 @@
+let beta;
+try {
+    beta = _config.beta === true;
+} catch (err) {
+    beta = false;
+}
+
 module.exports = {
-    dev: _config.beta,
-    srcDir: 'src/Frontend/',
+    dev: beta,
+    srcDir: 'src/Frontend',
     build: {
         vendor: ['axios'],
         extractCSS: true
     },
-    css: [
+    modules: [
+        ["@nuxtjs/axios", {
+            baseURL: beta ? 'http://localhost:8079/api/v1' : 'https://api.blargbot.xyz/api/v1',
+            proxyHeadersIgnore: ['host', 'accept', 'cf-ray', 'cf-connecting-ip'],
+            proxyHeaders: true
+        }]
     ],
     head: {
         meta: [{
@@ -13,7 +25,7 @@ module.exports = {
             content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
         }],
         script: [
-            'https://code.getmdl.io/1.3.0/material.min.js'
+            { src: 'https://code.getmdl.io/1.3.0/material.min.js', body: true }
         ],
         link: [
             { rel: 'shortcut icon', type: 'image/png', href: '/img/favicon.png' },
@@ -24,25 +36,25 @@ module.exports = {
     },
     router: {
         base: '/app/',
-        extendRoutes(routes, resolve) {
-            routes.push({
-                path: '/',
-                component: resolve(__dirname, 'renders/wrapper.vue'),
-                children: [
-                    {
-                        name: 'main', path: '/',
-                        component: resolve(__dirname, 'renders/index.vue')
-                    },
-                    {
-                        name: 'terms', path: '/terms',
-                        component: resolve(__dirname, 'renders/terms.vue')
-                    },
-                    {
-                        name: 'docs', path: '/docs',
-                        component: resolve(__dirname, 'renders/docs.vue')
-                    },
-                ]
-            });
-        }
+        // extendRoutes(routes, resolve) {
+        //     routes.push({
+        //         path: '/',
+        //         component: resolve(__dirname, 'renders/wrapper.vue'),
+        //         children: [
+        //             {
+        //                 name: 'main', path: '/',
+        //                 component: resolve(__dirname, 'renders/index.vue')
+        //             },
+        //             {
+        //                 name: 'terms', path: '/terms',
+        //                 component: resolve(__dirname, 'renders/terms.vue')
+        //             },
+        //             {
+        //                 name: 'docs', path: '/docs',
+        //                 component: resolve(__dirname, 'renders/docs.vue')
+        //             },
+        //         ]
+        //     });
+        // }
     }
 };

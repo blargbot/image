@@ -10,6 +10,7 @@ const im = require('gm').subClass({
 const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
+const GIFEncoder = require('gifencoder');
 
 class ArgError extends Error {
     constructor(arg, m) {
@@ -29,18 +30,48 @@ class ImageGenerator {
     get fs() { return fs; }
     get path() { return path; }
     get phantom() { return phantom; }
+    get GIFEncoder() { return GIFEncoder; }
 
     constructor(args = {}) {
         this.title = args.title;
         this.description = args.description;
         this.body = args.body;
+        this.type = 'png';
+
+        // gif rendering stuff
+        this.encoder = null;
+        this.gifStream;
+        this.buffers = [];
+    }
+
+    prepareGIFEncoder(width, height, repeat = 0, delay = 50) {
+        this.encoder = new GIFEncoder(width, height);
+        this.gifStream = this.encoder.createReadStream();
+        this.gifStream.on('data', (buffer) => {
+            this.buffers.push(buffer);
+        })
+        this.encoder.start();
+        this.encoder.setRepeat(repeat);
+        this.encoder.setDelay(delay);
+        return this.encoder;
+    }
+
+    renderGIF() {
+        return new Promise((res, rej) => {
+            this.gifStream.on('end', async () => {
+                res(Buffer.concat(this.buffers));
+            });
+
+            this.encoder.finish();
+        })
     }
 
     serialize() {
         return {
             title: this.title,
             description: this.description,
-            body: this.body
+            body: this.body,
+            type: this.type
         };
     }
 
@@ -56,8 +87,16 @@ class ImageGenerator {
                     try {
                         args[arg.name] = JSON.parse(args[arg.name]);
                     } catch (err) { }
-                if (typeof args[arg.name] !== arg.type)
-                    throw new ArgError(arg, `expected type '${arg.type}' but received '${typeof args[arg.name]}'`);
+                if (arg.type.includes('|')) return;
+                if (/array\[.+\]/.test(arg.type)) {
+                    if (!Array.isArray(arg[arg.name]))
+                        throw new ArgError(arg, `expected type 'array' but received '${typeof args[arg.name]}'`);
+                }
+                else {
+                    let types = arg.type.split(' | ');
+                    if (typeof args[arg.name] !== arg.type)
+                        throw new ArgError(arg, `expected type '${arg.type}' but received '${typeof args[arg.name]}'`);
+                }
             } else if (arg.type === 'string' && args[arg.name])
                 args[arg.name] = args[arg.name].toString();
         }
@@ -140,7 +179,7 @@ class ImageGenerator {
     getLocalResource(name, encoding = null) {
         return new Promise((resolve, reject) => {
             let filePath = this.path.join(this.resourceDir, name);
-            fs.readFile(name, { encoding }, (err, res) => {
+            fs.readFile(filePath, { encoding }, (err, res) => {
                 if (err) reject(err);
                 else resolve(res);
             });
@@ -151,8 +190,19 @@ class ImageGenerator {
         return this.path.join(this.resourceDir, name).replace(/\\/g, '/').replace(/^\w:/, '');
     }
 
+    async decodeImage(text) {
+        let resource;
+        if (text.startsWith('http'))
+            resource = await this.getResource(text);
+        else if (Buffer.isBuffer(text))
+            resource = text;
+        else
+            resource = Buffer.from(text, 'base64');
+        return resource;
+    }
+
     getResource(url) {
-        return new Promise(async function (resolve, reject) {
+        return new Promise(async (resolve, reject) => {
             url = url.trim();
             if (url.startsWith('<') && url.endsWith('>')) {
                 url = url.substring(1, url.length - 1);
@@ -195,7 +245,7 @@ class ImageGenerator {
 
             let image = im().command('convert');
 
-            image.font(path.join(__dirname, 'img', 'fonts', options.font));
+            image.font(path.join(this.resourceDir, 'fonts', options.font));
             image.out('-size').out(options.size);
 
             image.out('-background').out('transparent');
@@ -251,6 +301,10 @@ class ImageGenerator {
             });
         });
     }
+
+    getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
 }
 
 module.exports = ImageGenerator;

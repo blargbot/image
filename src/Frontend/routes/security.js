@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
-const Security = require('../../Core/Security');
+const Security = require('../../Core/ApiSecurity');
 
 const CAT_ID = '103347843934212096';
 

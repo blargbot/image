@@ -8,6 +8,17 @@
       <!-- Navigation -->
       <nav class="mdl-navigation">
         <router-link to='/docs' class="mdl-navigation__link">Documentation</router-link>
+        <router-link to='/security' class="mdl-navigation__link"
+          v-if="$store.state.user && $store.state.user.id === '103347843934212096'">
+          Security</router-link>
+        <router-link v-if="$store.state.user" to='/user' class="mdl-navigation__link">
+          <strong>{{$store.state.user.username}}#{{$store.state.user.discriminator}}</strong>
+          <img :src="$store.state.user.avatarURL" class='avatar'>
+        </router-link>
+        <a :href="$store.state.user ? '/logout' : '/login'" class="mdl-navigation__link">
+          {{$store.state.user ? 'Logout' : 'Login'}}
+        </a>
+        
       </nav>
     </div>
   </header>
@@ -34,5 +45,11 @@ export default {
 .breadcrumb {
   display: inline-block;
   vertical-align: top;
+}
+img.avatar {
+  height: 30px;
+  width: 30px;
+  border-radius: 50px;
+  margin-left: 5px;
 }
 </style>

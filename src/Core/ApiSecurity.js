@@ -19,7 +19,10 @@ class Security {
         try {
             const validate = jwt.verify(token, _config.security.secret);
             let [id, ts] = validate.split('.');
-            let user = await _dbModels.User.findOne({ where: { userid: id } });
+            if (!_bot.guilds.get('194232473931087872').members.get(id)) {
+                return null;
+            }
+            let user = await _dbModels.User.findById(id);
             let ts1 = moment(ts, 'x');
             let ts2 = moment(user.tokenDate);
             let diff = moment.duration(ts1 - ts2);

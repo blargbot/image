@@ -3,7 +3,9 @@ const moment = require('moment');
 const superagent = require('snekfetch');
 const childProcess = require('child_process');
 const path = require('path');
-const Security = require('../../Core/Security');
+const cookieparser = require('cookieparser');
+const ApiSecurity = require('../../Core/ApiSecurity');
+const SiteSecurity = require('../../Core/SiteSecurity');
 const fs = require('fs');
 const Timer = require('../../Structures/Timer');
 
@@ -31,18 +33,79 @@ class ApiRoute {
             res.send(JSON.stringify(this.endpoints));
         });
 
+        router.put('/user/:id', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u === '103347843934212096') {
+                try {
+                    let id = req.params.id;
+                    let user = await _dbModels.User.build({
+                        userid: id, tokenDate: Date.now()
+                    });
+                    await user.save();
+                    res.send({ ok: true });
+                } catch (err) {
+                    res.status(400).send({ message: err.message });
+                }
+            } else return this.errorAuthorization(res);
+        });
+        router.delete('/user/:id', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u === '103347843934212096') {
+                try {
+                    let id = req.params.id;
+                    let user = await _dbModels.User.findById(id);
+                    if (!user) {
+                        return res.status(400).send({ message: 'User did not exist.' });
+                    }
+                    await user.destroy();
+                    res.send({ ok: true });
+                } catch (err) {
+                    res.status(400).send({ message: err.message });
+                }
+            } else return this.errorAuthorization(res);
+        });
+
+        router.get('/user/@me/token', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u) {
+                let dataUser = await _dbModels.User.findById(u);
+                if (dataUser) {
+                    let token = await ApiSecurity.generateToken(u, req.query.invalidate === 'true');
+                    res.send(JSON.stringify({ token }));
+                } else {
+                    res.status(400).send(JSON.stringify({ error: 400, message: 'You do not have an account. Contact stupid cat#8160.' }));
+                }
+            } else this.errorAuthorization(res);
+        });
+
+        router.get('/user/@me', async (req, res) => {
+            let u = await SiteSecurity.validateRequest(req);
+            if (u) {
+                let du = website.bot.users.get(u);
+                if (!du) return res.status(404).send(JSON.stringify({
+                    code: 404,
+                    message: 'User not found.'
+                }));
+                let dataUser = await _dbModels.User.findById(u);
+                let user = {
+                    username: du.username,
+                    discriminator: du.discriminator,
+                    id: u,
+                    avatar: du.avatar,
+                    hasAccount: dataUser != null
+                }
+                res.send(JSON.stringify(user));
+            } else this.errorAuthorization(res);
+        });
+
         router.post('/image/:type', async (req, res) => {
             let timer = new Timer();
             let fullEndpoint = 'api/v1/image/' + req.params.type;
             timer.start();
             let success = false;
-            let u = await Security.validateToken(req.headers.authorization);
+            let u = await ApiSecurity.validateToken(req.headers.authorization);
             if (u === null) {
-                res.status(403);
-                res.send(JSON.stringify({
-                    code: 403,
-                    message: 'Invalid authorization.'
-                }));
+                this.errorAuthorization(res);
             } else if (!this.endpoints[req.params.type]) {
                 res.status(404);
                 res.send(JSON.stringify({
@@ -61,16 +124,31 @@ class ApiRoute {
                     }));
                 }
                 this.Metrics.usageCounter.labels(fullEndpoint, u).inc(1);
-                let { image, contentType } = await this.getImage(type, req.body);
-                res.set('Content-Type', contentType || 'image/png');
-                res.send(new Buffer.from(image, 'base64'));
-                success = true;
+                try {
+                    let { image, contentType } = await this.getImage(type, req.body);
+                    res.set('Content-Type', contentType || 'image/png');
+                    res.send(new Buffer.from(image, 'base64'));
+                    success = true;
+                } catch (err) {
+                    console.log(err);
+                    res.status(err.code || 500);
+                    res.end(JSON.stringify(err, null, 4));
+                    success = false;
+                }
             }
             timer.end();
             this.Metrics.httpRequestDurationMS
                 .labels(fullEndpoint, success)
                 .observe(timer.elapsed);
         });
+    }
+
+    errorAuthorization(res) {
+        res.status(403);
+        res.send(JSON.stringify({
+            code: 403,
+            message: 'Invalid authorization.'
+        }));
     }
 
     getImage(name, args) {
@@ -87,11 +165,22 @@ class ApiRoute {
 
             cp.on('message', (msg) => {
                 timer.end();
-                res(msg);
-                this.Metrics.imageGenDurationMS
-                    .labels(name)
-                    .observe(timer.elapsed);
+                if (msg.error) {
+                    timer.end();
+                    console.error(msg);
+                    rej(msg);
+                } else {
+                    res(msg);
+                    this.Metrics.imageGenDurationMS
+                        .labels(name)
+                        .observe(timer.elapsed);
+                }
             });
+            cp.on('error', (err) => {
+                timer.end();
+                console.error(err);
+                rej(err);
+            })
         });
 
     }

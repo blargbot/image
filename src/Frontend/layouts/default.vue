@@ -5,6 +5,10 @@
       <div class='container'>
         <nuxt/>
       </div>
+      <div id='snackbar' class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+      </div>
     </main>
     <pagefooter></pagefooter>
   </div>
@@ -32,5 +36,9 @@ main {
 footer,
 header {
   flex-shrink: 0;
+}
+
+.mdl-snackbar__text {
+  white-space: pre;
 }
 </style>
