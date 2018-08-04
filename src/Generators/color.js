@@ -47,6 +47,7 @@ class ClintGenerator extends Generator {
         gridHeight = Math.ceil(colors.length / gridWidth);
         height = gridHeight * 128;
         width = gridWidth * 128;
+        console.log(colors);
 
         let img = new Jimp(width, height);
         for (let i = 0; i < colors.length; i++) {
