@@ -192,6 +192,8 @@ class ImageGenerator {
 
     async decodeImage(text) {
         let resource;
+        if (/^<.+>$/.test(text))
+            text = text.substring(1, text.length - 1);
         if (text.startsWith('http'))
             resource = await this.getResource(text);
         else if (Buffer.isBuffer(text))
