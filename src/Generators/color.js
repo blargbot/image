@@ -27,6 +27,8 @@ class ClintGenerator extends Generator {
 
         if (colors.length > 64) throw { code: 400, message: 'A maximum of 64 colors may be provided. You provided ' + colors.length + '.' };
         for (let i = 0; i < colors.length; i++) {
+            if (/^[\da-f]{6}$/i.test(colors[i]))
+                colors[i] = '#' + colors[i];
             let c = parse(colors[i]);
             if (!c.rgba)
                 throw { code: 400, message: 'An invalid color was provided: \'' + colors[i] + '\'' }
