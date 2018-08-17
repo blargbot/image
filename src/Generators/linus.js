@@ -1,10 +1,10 @@
 const Generator = require('../Structures/ImageGenerator');
 const Jimp = require('jimp');
 
-class ClintGenerator extends Generator {
+class LinusGenerator extends Generator {
     constructor() {
         super({
-            title: 'Clint',
+            title: 'Linus',
             description: 'Shows a picture of Linus pointing to something on a monitor.',
             body: [
                 {
@@ -51,4 +51,4 @@ class ClintGenerator extends Generator {
     }
 }
 
-module.exports = ClintGenerator;
+module.exports = LinusGenerator;
