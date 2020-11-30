@@ -17,6 +17,10 @@ class DiscordClient extends Eris.Client {
                 GUILD_BAN_ADD: true,
                 GUILD_BAN_REMOVE: true
             },
+            intents: [
+                'guilds',
+                'guildMembers'
+            ],
             getAllUsers: true,
             autoReconnect: true,
             restMode: true,
