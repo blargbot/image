@@ -19,7 +19,7 @@ class TheSearchGenerator extends Generator {
     async generate(args) {
         await super.generate(args);
 
-        let base64 = await this.renderPhantom('thesearch.html', { replace1: args.text }, 1, 'PNG', this.resize);
+        let base64 = await this.renderPuppet('thesearch.html', { replace1: args.text }, 1, 'PNG', this.resize);
 
         await this.send(base64);
     }

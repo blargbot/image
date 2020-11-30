@@ -40,6 +40,7 @@
     "phantom": "^4.0.12",
     "phantomjs-prebuilt": "^2.1.16",
     "prom-client": "^11.0.0",
+    "puppeteer": "^5.5.0",
     "sequelize": "^4.37.6",
     "snekfetch": "^4.0.0",
     "swig": "^1.4.2"

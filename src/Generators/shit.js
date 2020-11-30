@@ -26,7 +26,7 @@ class ShitGenerator extends Generator {
     async generate(args) {
         await super.generate(args);
 
-        let base64 = await this.renderPhantom('shit.html', { replace1: args.text, replace2: args.plural ? 'are' : 'is' }, 1, 'PNG',
+        let base64 = await this.renderPuppet('shit.html', { replace1: args.text, replace2: args.plural ? 'are' : 'is' }, 1, 'PNG',
             this.resize);
 
         await this.send(base64);

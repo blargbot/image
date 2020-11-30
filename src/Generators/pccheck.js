@@ -41,7 +41,7 @@ class PoemGenerator extends Generator {
                 rand.italic = true;
             }
         }
-        let base64 = await this.renderPhantom('pccheck.html', {}, 2, 'PNG',
+        let base64 = await this.renderPuppet('pccheck.html', {}, 2, 'PNG',
             [function (m) {
                 var thing = document.getElementById('replace1');
                 for (var i = 0; i < m.length; i++) {

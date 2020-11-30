@@ -1,6 +1,7 @@
 const Eris = require('eris');
 const snekfetch = require('snekfetch');
 const phantom = require('phantom');
+const puppeteer = require('puppeteer');
 
 const gm = require('gm');
 const im = require('gm').subClass({
@@ -129,22 +130,12 @@ class ImageGenerator {
             process.send({ image: Buffer.from(data, 'base64'), contentType });
     }
 
-    async renderPhantom(file, replaces, scale = 1, format = 'PNG', extraFunctions, extraFunctionArgs) {
-        const instance = await phantom.create(['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1']);
-        const page = await instance.createPage();
-
-        page.on('onConsoleMessage', function (msg) {
-            console.debug('[IM]', msg);
-        });
-        page.on('onResourceError', function (resourceError) {
-            console.error(resourceError.url + ': ' + resourceError.errorString);
-        });
+    async renderPuppet(file, replaces, scale = 1, format = 'PNG', extraFunctions, ...extraFunctionArgs) {
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
 
         let dPath = this.getLocalResourcePath(file);
-        const status = await page.open(dPath);
-
-        //await page.property('viewportSize', { width: 1440, height: 900 });
-        await page.property('zoomFactor', scale);
+        await page.goto(dPath);
 
         let rect = await page.evaluate(function (message) {
             var keys = Object.keys(message);
@@ -152,34 +143,41 @@ class ImageGenerator {
                 var thing = document.getElementById(keys[i]);
                 thing.innerText = message[keys[i]];
             }
+
             try {
                 var workspace = document.getElementById("workspace");
-                return workspace.getBoundingClientRect();
+                return JSON.parse(JSON.stringify(workspace.getBoundingClientRect()));
             } catch (err) {
                 console.error(err);
                 return { top: 0, left: 0, width: 300, height: 300 };
             }
         }, replaces);
 
-        await page.on('clipRect', {
-            top: rect.top,
-            left: rect.left,
-            width: rect.width * scale,
-            height: rect.height * scale
-        });
         if (typeof extraFunctions === 'function') {
             extraFunctions = [extraFunctions];
         }
         if (Array.isArray(extraFunctions)) {
             for (const extraFunction of extraFunctions) {
                 if (typeof extraFunction === 'function')
-                    await page.evaluate(extraFunction, extraFunctionArgs);
+                    await page.evaluate(extraFunction, ...extraFunctionArgs);
             }
         }
 
-        let base64 = await page.renderBase64(format);
-        await instance.exit();
-        return base64;
+        const b64 = await page.screenshot({
+            type: format.toLowerCase(),
+            clip: {
+                x: rect.top,
+                y: rect.left,
+                width: rect.width * scale,
+                height: rect.height * scale
+            },
+            omitBackground: true,
+            encoding: 'base64'
+        });
+
+        await browser.close();
+
+        return b64;
     }
 
     sleep(time = 1000) {
@@ -203,7 +201,7 @@ class ImageGenerator {
     }
 
     getLocalResourcePath(name) {
-        return this.path.join(this.resourceDir, name).replace(/\\/g, '/').replace(/^\w:/, '');
+        return 'file://' + this.path.join(this.resourceDir, name).replace(/\\/g, '/');
     }
 
     async decodeImage(text) {

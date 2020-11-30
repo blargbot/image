@@ -37,7 +37,7 @@ class PoemGenerator extends Generator {
             args.name = args.name.toLowerCase();
         else args.name = 'monika';
         if (!args.text) args.text = 'Just Monika.';
-        let base64 = await this.renderPhantom('poem.html', { replace1: args.text }, 2, 'PNG',
+        let base64 = await this.renderPuppet('poem.html', { replace1: args.text }, 2, 'PNG',
             function (args) {
                 document.getElementById('replace1').classList.add(args.name);
                 if (args.name === 'yuri' && args.yuri) {
