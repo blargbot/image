@@ -7,6 +7,15 @@ const im = require('gm').subClass({
     imageMagick: true
 });
 
+const parse = require('parse-color');
+// additional colors
+const extraParse = {
+    'blurple': '#7289DA',
+    'greyple': '#99AAB5',
+    'darkbutnotblack': '#2C2F33',
+    'notquiteblack': '#23272A'
+}
+
 const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
@@ -42,6 +51,13 @@ class ImageGenerator {
         this.encoder = null;
         this.gifStream;
         this.buffers = [];
+    }
+
+    parse(color = '') {
+        let ep = extraParse[color.toLowerCase()];
+        if (ep)
+            color = ep;
+        return parse(color);
     }
 
     prepareGIFEncoder(width, height, repeat = 0, delay = 50) {
@@ -192,6 +208,8 @@ class ImageGenerator {
 
     async decodeImage(text) {
         let resource;
+        if (/^<.+>$/.test(text))
+            text = text.substring(1, text.length - 1);
         if (text.startsWith('http'))
             resource = await this.getResource(text);
         else if (Buffer.isBuffer(text))

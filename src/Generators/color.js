@@ -1,8 +1,7 @@
 const Generator = require('../Structures/ImageGenerator');
 const Jimp = require('jimp');
-const parse = require('parse-color');
 
-class ClintGenerator extends Generator {
+class ColorGenerator extends Generator {
     constructor() {
         super({
             title: 'Color',
@@ -27,7 +26,9 @@ class ClintGenerator extends Generator {
 
         if (colors.length > 64) throw { code: 400, message: 'A maximum of 64 colors may be provided. You provided ' + colors.length + '.' };
         for (let i = 0; i < colors.length; i++) {
-            let c = parse(colors[i]);
+            if (/^[\da-f]{6}$/i.test(colors[i]))
+                colors[i] = '#' + colors[i];
+            let c = this.parse(colors[i]);
             if (!c.rgba)
                 throw { code: 400, message: 'An invalid color was provided: \'' + colors[i] + '\'' }
 
@@ -64,4 +65,4 @@ class ClintGenerator extends Generator {
     }
 }
 
-module.exports = ClintGenerator;
+module.exports = ColorGenerator;
