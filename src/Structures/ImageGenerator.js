@@ -163,13 +163,19 @@ class ImageGenerator {
             }
         }
 
+        console.log(rect);
+
+        await page.setViewport({
+            width: Math.floor(rect.width), height: Math.floor(rect.height), deviceScaleFactor: scale
+        });
+
         const b64 = await page.screenshot({
             type: format.toLowerCase(),
             clip: {
                 x: rect.top,
                 y: rect.left,
-                width: rect.width * scale,
-                height: rect.height * scale
+                width: rect.width,
+                height: rect.height
             },
             omitBackground: true,
             encoding: 'base64'
