@@ -131,7 +131,7 @@ class ImageGenerator {
     }
 
     async renderPuppet(file, replaces, scale = 1, format = 'PNG', extraFunctions, ...extraFunctionArgs) {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({args: ['--no-sandbox']});
         const page = await browser.newPage();
 
         let dPath = this.getLocalResourcePath(file);
