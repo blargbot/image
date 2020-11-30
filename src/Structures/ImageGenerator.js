@@ -163,8 +163,6 @@ class ImageGenerator {
             }
         }
 
-        console.log(rect);
-
         await page.setViewport({
             width: Math.floor(rect.width), height: Math.floor(rect.height), deviceScaleFactor: scale
         });
