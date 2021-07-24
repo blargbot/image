@@ -22,7 +22,7 @@ class Security {
             if (!_bot.guilds.get('194232473931087872').members.get(id)) {
                 return null;
             }
-            let user = await _dbModels.User.findById(id);
+            let user = await _dbModels.User.findByPk(id);
             let ts1 = moment(ts, 'x');
             let ts2 = moment(user.tokenDate);
             let diff = moment.duration(ts1 - ts2);

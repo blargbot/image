@@ -53,7 +53,7 @@ class ApiRoute {
             if (u === '103347843934212096') {
                 try {
                     let id = req.params.id;
-                    let user = await _dbModels.User.findById(id);
+                    let user = await _dbModels.User.findByPk(id);
                     if (!user) {
                         return res.status(400).send({ message: 'User did not exist.' });
                     }
@@ -68,7 +68,7 @@ class ApiRoute {
         router.get('/user/@me/token', async (req, res) => {
             let u = await SiteSecurity.validateRequest(req);
             if (u) {
-                let dataUser = await _dbModels.User.findById(u);
+                let dataUser = await _dbModels.User.findByPk(u);
                 if (dataUser) {
                     let token = await ApiSecurity.generateToken(u, req.query.invalidate === 'true');
                     res.send(JSON.stringify({ token }));
@@ -86,7 +86,7 @@ class ApiRoute {
                     code: 404,
                     message: 'User not found.'
                 }));
-                let dataUser = await _dbModels.User.findById(u);
+                let dataUser = await _dbModels.User.findByPk(u);
                 let user = {
                     username: du.username,
                     discriminator: du.discriminator,

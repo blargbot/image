@@ -21,8 +21,11 @@ const Models = {
 }
 global._dbModels = Models;
 
+console.init('Connecting to DB...');
 sequelize.authenticate()
     .then(() => {
         console.init('Database authenticated. Syncing...');
         sequelize.sync({ force: false });
+    }).catch(err => {
+        console.init('Failed to connect to DB.');
     });
