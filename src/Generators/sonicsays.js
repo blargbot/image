@@ -19,7 +19,7 @@ class ClintGenerator extends Generator {
     async generate(args) {
         await super.generate(args);
 
-        let base64 = await this.renderPuppet('sonicsays.html', { replace1: args.text, replace2: args.text }, 8);
+        let base64 = await this.renderPuppet('sonicsays.html', { replace1: args.text, replace2: args.text }, 1);
 
         await this.send(base64);
     }
