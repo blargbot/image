@@ -31,7 +31,7 @@
     "gm": "^1.23.1",
     "jimp": "^0.2.28",
     "jsonwebtoken": "^8.2.1",
-    "moment-timezone": "^0.5.16",
+    "moment-timezone": "^0.5.35",
     "nuxt": "^1.4.0",
     "parse-color": "^1.0.0",
     "passport": "^0.4.0",
