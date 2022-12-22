@@ -30,7 +30,7 @@
     "gifencoder": "^1.1.0",
     "gm": "^1.23.1",
     "jimp": "^0.2.28",
-    "jsonwebtoken": "^8.2.1",
+    "jsonwebtoken": "^9.0.0",
     "moment-timezone": "^0.5.16",
     "nuxt": "^1.4.0",
     "parse-color": "^1.0.0",
